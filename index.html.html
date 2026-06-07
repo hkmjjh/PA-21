@@ -1,1 +1,1688 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>건국대학교 충주병원 PA 간호사 SOAP 의무기록 초안 작성 가이드</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons for Medical and UI Visuals -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Nanum Gothic for Perfect Readability -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --text-scale-factor: 1.12; /* 노안 고려 기본 폰트 스케일 상향 조정 */
+            --mobile-scale-modifier: 0.82; /* 모바일 기기 최적화 폰트 축소 필터 */
+        }
 
+        @media (min-width: 768px) {
+            :root {
+                --mobile-scale-modifier: 1.0; /* PC에서는 원본 100% 반영 */
+            }
+        }
+
+        body {
+            font-family: 'Inter', 'Nanum Gothic', sans-serif;
+            background-color: #090d16; 
+            color: #f1f5f9;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            word-break: keep-all;
+        }
+        
+        /* 16:9 Presentation Canvas - Responsive Mobile Layout Flex */
+        .slide-canvas {
+            width: 100%;
+            max-width: 1200px;
+            height: 100%; /* 모바일 메인 영역 남은 공간에 꽉 맞춤 */
+            max-height: 100%;
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (min-width: 768px) {
+            .slide-canvas {
+                aspect-ratio: 16 / 9;
+                height: auto;
+                max-height: calc(100vh - 180px); /* PC에서는 가로 표준 규격 */
+            }
+        }
+
+        /* Responsive typography classes linked to JS Scale Slider & Mobile Modifier */
+        .scale-text-title { font-size: calc(1.85rem * var(--text-scale-factor) * var(--mobile-scale-modifier)); line-height: 1.25; }
+        .scale-text-subtitle { font-size: calc(1.35rem * var(--text-scale-factor) * var(--mobile-scale-modifier)); line-height: 1.35; }
+        .scale-text-base { font-size: calc(1.1rem * var(--text-scale-factor) * var(--mobile-scale-modifier)); line-height: 1.55; }
+        .scale-text-lg { font-size: calc(1.25rem * var(--text-scale-factor) * var(--mobile-scale-modifier)); line-height: 1.45; }
+        .scale-text-xl { font-size: calc(1.45rem * var(--text-scale-factor) * var(--mobile-scale-modifier)); line-height: 1.45; }
+        .scale-text-sm { font-size: calc(0.95rem * var(--text-scale-factor) * var(--mobile-scale-modifier)); line-height: 1.45; }
+        .scale-text-xs { font-size: calc(0.8rem * var(--text-scale-factor) * var(--mobile-scale-modifier)); line-height: 1.35; }
+
+        /* Force clean responsive flex scroll on Slide Body to prevent mobile cuts */
+        #slideBody {
+            flex: 1 1 0%;
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 8px; /* 스크롤바 영역 확보 */
+        }
+
+        @media (min-width: 768px) {
+            #slideBody {
+                padding-right: 4px;
+            }
+        }
+
+        /* Micro navigation dot styles */
+        .micro-dot-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 9999px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .micro-dot-active {
+            width: 28px;
+            background-color: #2EC4B6 !important;
+        }
+
+        /* Prevent awkward breaks inside tables and text boxes */
+        p, span, h1, h2, h3, h4, th, td, li {
+            word-break: keep-all !important;
+            overflow-wrap: break-word;
+        }
+
+        /* Soft pulsing animation for visualizer */
+        @keyframes subtle-glow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.05); }
+        }
+        .pulse-glow {
+            animation: subtle-glow 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between p-0 m-0 select-none">
+
+    <!-- Onboarding Screen for Autoplay Authorization -->
+    <div id="autoplayOverlay" class="fixed inset-0 bg-[#072559]/98 backdrop-blur-lg z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full text-center space-y-6 shadow-2xl border-t-8 border-[#2EC4B6] text-slate-800">
+            <div class="flex justify-center">
+                <svg class="h-20" viewBox="0 0 500 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 60 C 30 35, 70 35, 70 60 C 70 85, 30 85, 30 60 Z" stroke="#2EC4B6" stroke-width="8" fill="none"/>
+                    <path d="M50 40 C 25 40, 25 80, 50 80 C 75 80, 75 40, 50 40 Z" stroke="#0B3D91" stroke-width="8" fill="none"/>
+                    <text x="100" y="55" fill="#0B3D91" font-family="Nanum Gothic" font-weight="bold" font-size="28">건국대학교충주병원</text>
+                    <text x="100" y="85" fill="#555" font-family="Inter" font-weight="bold" font-size="14" letter-spacing="1">KONKUK UNIVERSITY CHUNGJU HOSPITAL</text>
+                </svg>
+            </div>
+            <div class="space-y-4">
+                <span class="text-sm font-black tracking-widest text-[#2EC4B6] uppercase bg-[#2EC4B6]/10 px-4 py-1.5 rounded-full">PA 임상기록 역량강화 교육</span>
+                <h3 class="text-3xl font-black text-[#0B3D91] leading-tight">건국대학교 충주병원<br>PA 간호사 입원 경과기록지 초안 작성 교육</h3>
+                <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200">
+                    <p class="text-base text-slate-700 leading-relaxed font-bold mb-1">
+                        본 가이드는 AI 음성 시스템을 통해 교육이 제공됩니다.
+                    </p>
+                    <p class="text-xs text-slate-500 font-extrabold flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-circle-exclamation text-[#2EC4B6]"></i>
+                        글씨가 잘 안 보이면 상단 가운데 글씨 크기를 조절하세요.
+                    </p>
+                </div>
+            </div>
+            <button id="startTrainingBtn" class="w-full bg-[#2EC4B6] hover:bg-[#20a396] text-white font-black py-5 px-6 rounded-2xl shadow-xl shadow-[#2EC4B6]/30 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 text-lg">
+                음성 가이드를 활성화하고 교육을 시작합니다.
+            </button>
+            <div class="text-xs text-slate-400 flex items-center justify-center gap-2 font-bold">
+                <i class="fa-solid fa-heart-pulse text-[#2EC4B6] animate-pulse"></i>
+                <span>건국대학교 충주병원 PA 간호사 교육 프로그램</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Brand Header -->
+    <header class="bg-[#072559] text-white py-2 md:py-3 px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-3 shadow-md border-b-2 border-[#2EC4B6] shrink-0">
+        <div class="flex items-center justify-between w-full md:w-auto gap-4">
+            <h1 class="text-base font-black tracking-tight text-white flex items-center gap-2">
+                <div class="flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg shadow-sm">
+                    <svg class="h-5 md:h-6" viewBox="0 0 100 100" fill="none">
+                        <path d="M20 50 C 20 30, 60 30, 60 50 C 60 70, 20 70, 20 50 Z" stroke="#2EC4B6" stroke-width="12" fill="none"/>
+                        <path d="M40 30 C 15 30, 15 70, 40 70 C 65 70, 65 30, 40 30 Z" stroke="#0B3D91" stroke-width="12" fill="none"/>
+                    </svg>
+                    <span class="text-[#0B3D91] font-black text-xs md:text-sm">건국대학교충주병원</span>
+                </div>
+                <span class="bg-[#2EC4B6]/20 text-[#2EC4B6] border border-[#2EC4B6]/30 text-[10px] md:text-xs px-2.5 py-1 rounded-full font-black">입원 경과기록지 초안 작성</span>
+            </h1>
+        </div>
+
+        <!-- Font Size Scale Controller Widget for Senior Doctors -->
+        <div class="flex items-center gap-2 bg-slate-900/60 p-1 md:p-1.5 rounded-xl border border-slate-700 w-full md:w-auto justify-center">
+            <span class="text-[10px] md:text-xs font-black text-slate-300 px-1 md:px-2 flex items-center gap-1"><i class="fa-solid fa-magnifying-glass-plus"></i> 글씨 크기</span>
+            <div class="flex gap-0.5 md:gap-1">
+                <button onclick="changeFontSize(1.0)" id="sizeBtn-1" class="size-btn px-2 md:px-3 py-1 rounded-lg text-[10px] md:text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">보통</button>
+                <button onclick="changeFontSize(1.12)" id="sizeBtn-2" class="size-btn px-2 md:px-3 py-1 rounded-lg text-[10px] md:text-xs font-bold bg-[#2EC4B6] text-white transition">크게</button>
+                <button onclick="changeFontSize(1.22)" id="sizeBtn-3" class="size-btn px-2 md:px-3 py-1 rounded-lg text-[10px] md:text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">더 크게</button>
+                <button onclick="changeFontSize(1.32)" id="sizeBtn-4" class="size-btn px-2 md:px-3 py-1 rounded-lg text-[10px] md:text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">최대</button>
+            </div>
+        </div>
+
+        <div class="hidden md:flex items-center gap-1" id="topDotContainer">
+            <!-- Navigation dots rendered dynamically -->
+        </div>
+    </header>
+
+    <!-- Main Presentation Space -->
+    <main class="flex-1 flex flex-col justify-center items-center p-4 overflow-hidden bg-slate-950 relative">
+        
+        <!-- Standard 16:9 Presentation Slide Canvas -->
+        <div class="slide-canvas rounded-2xl p-4 md:p-8 relative" id="slideContainer">
+            <!-- Top brand accent bar (Fixed) -->
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-[#2EC4B6] z-20"></div>
+            
+            <!-- Slide Title Header (Fixed at the top) -->
+            <div class="w-full pb-3 border-b border-slate-200 flex justify-between items-center shrink-0 z-20 mb-2">
+                <h2 class="scale-text-title font-black text-[#0B3D91] flex items-center gap-2 md:gap-3" id="slideHeaderTitle">
+                    <!-- Dynamic Slide Title -->
+                </h2>
+                <div class="flex items-center gap-1.5 md:gap-2">
+                    <span id="audioSourceIndicator" class="scale-text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 md:px-3 py-1 rounded-full">
+                        <i class="fa-solid fa-file-audio"></i> 아라 오리지널 가이드
+                    </span>
+                    <span class="scale-text-sm font-black text-slate-400 uppercase tracking-widest bg-slate-100 px-3 md:px-4 py-1.5 rounded-full hidden sm:inline-block" id="slideHeaderCategory">
+                        PA Standard Guide
+                    </span>
+                </div>
+            </div>
+
+            <!-- Dynamic Centered Slide Body Content (Enriched with native CSS Scroll constraints) -->
+            <div class="flex-1 flex flex-col justify-start items-center w-full overflow-y-auto z-10 pr-2" id="slideBody">
+                <!-- Injected via JavaScript dynamically -->
+            </div>
+
+            <!-- Standard Clean Slide Footer (Fixed at the bottom) -->
+            <div class="mt-2 pt-2 border-t border-slate-200 flex justify-between items-center text-slate-400 shrink-0 z-20">
+                <div class="flex items-center gap-2 font-black text-[10px] md:text-xs scale-text-xs">
+                    <span class="text-[#0B3D91] tracking-wider">KONKUK UNIVERSITY CHUNGJU HOSPITAL</span>
+                </div>
+                <div class="font-mono text-slate-600 font-bold text-[10px] md:text-xs scale-text-xs" id="slidePageIndicator">
+                    Slide 01 / 21
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Settings Drawer Trigger Button -->
+        <button id="openTuningBtn" class="absolute bottom-6 right-6 bg-[#0B3D91] hover:bg-[#072559] text-white border border-[#2EC4B6]/50 rounded-full px-5 py-3 shadow-2xl flex items-center gap-2 text-xs font-black z-30 transition transform hover:scale-105">
+            <i class="fa-solid fa-sliders text-[#2EC4B6]"></i> 아라 목소리 튜닝 & MP3 매핑
+        </button>
+
+        <!-- Voice & Audio Tuning Drawer Panel (Right slide-out) -->
+        <div id="tuningDrawer" class="fixed top-0 right-0 h-full w-96 bg-slate-900 border-l border-slate-700 shadow-2xl transform translate-x-full transition-transform duration-300 z-50 flex flex-col p-6 text-slate-100 overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4 mb-5">
+                <h3 class="text-lg font-black text-[#2EC4B6] flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> 목소리 및 오디오 설정
+                </h3>
+                <button id="closeTuningBtn" class="text-slate-400 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h4 class="text-xs font-black text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-file-audio text-[#2EC4B6] mr-1.5"></i> 클로바 아라 MP3 파일 수동 덮어쓰기</h4>
+                </div>
+                
+                <p class="text-xs text-slate-400 leading-relaxed font-bold">
+                    네이버 클로바더빙에서 각 대본을 '아라' 목소리로 다운로드한 오리지널 MP3 파일들을 아래에 넣으시면, 브라우저가 영구 저장하여 자동 덮어쓰기 매핑을 진행합니다.
+                </p>
+
+                <!-- Drag and Drop / Input Area -->
+                <div class="bg-slate-950 border-2 border-dashed border-slate-700 hover:border-[#2EC4B6] rounded-xl p-4 text-center cursor-pointer transition relative" id="audioDropZone">
+                    <input type="file" id="customAudioInput" multiple accept="audio/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                    <div class="space-y-2 pointer-events-none">
+                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-500" id="uploadCloudIcon"></i>
+                        <p class="text-xs font-black text-slate-300" id="uploadStatusText">클로바 아라 MP3 파일 일괄 등록</p>
+                        <p class="text-[10px] text-slate-500">여러 MP3 파일을 한 번에 선택하여 넣어주세요.</p>
+                    </div>
+                </div>
+
+                <!-- Custom audio mapping progress / status list -->
+                <div class="space-y-2 max-h-80 overflow-y-auto pr-1">
+                    <div class="flex justify-between items-center text-xs text-slate-400 font-bold">
+                        <span>슬라이드별 수동 매핑 현황</span>
+                        <button id="clearCustomAudioBtn" class="text-red-400 hover:text-red-300 text-[10px] font-black"><i class="fa-solid fa-trash-can"></i> 매핑 초기화</button>
+                    </div>
+                    <div class="divide-y divide-slate-800 text-[11px]" id="mappingStatusList">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Audio & Navigation Command Bar -->
+    <footer class="bg-slate-900 text-white py-3 md:py-4 px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-3 shadow-2xl shrink-0">
+        <div class="flex items-center justify-between w-full md:w-auto gap-2 md:gap-3">
+            <!-- Previous Button -->
+            <button id="prevBtn" class="bg-white/10 hover:bg-white/20 text-white font-bold px-4 md:px-6 py-3 md:py-4 rounded-xl transition flex items-center gap-1.5 md:gap-2 text-sm md:text-base disabled:opacity-35 disabled:pointer-events-none">
+                <i class="fa-solid fa-chevron-left"></i> 이전
+            </button>
+            
+            <!-- Audio Toggle Control (Play / Pause / Resume) -->
+            <button id="playAudioBtn" class="flex-1 md:flex-none justify-center bg-[#2EC4B6] hover:bg-[#20a396] text-white font-black px-6 md:px-8 py-3 md:py-4 rounded-xl transition flex items-center gap-2 md:gap-3 text-sm md:text-base shadow-lg shadow-[#2EC4B6]/20">
+                <i id="playIcon" class="fa-solid fa-pause"></i>
+                <span id="playText">일시 정지</span>
+            </button>
+            
+            <!-- Next Button -->
+            <button id="nextBtn" class="bg-white/10 hover:bg-white/20 text-[#2EC4B6] font-bold px-4 md:px-6 py-3 md:py-4 rounded-xl transition flex items-center gap-1.5 md:gap-2 text-sm md:text-base">
+                다음 <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Equalizer & Audio Progress HUD -->
+        <div class="flex flex-wrap md:flex-nowrap items-center gap-3 md:gap-6 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-slate-800/80 pt-3 md:pt-0">
+            <!-- Real-time Equalizer Wave Simulation Canvas -->
+            <div class="flex items-center gap-2 md:flex-col md:items-center">
+                <div class="flex items-center gap-1.5 text-[10px] md:text-xs text-slate-400 font-bold mb-0.5">
+                    <i class="fa-solid fa-waveform text-[#2EC4B6] animate-pulse"></i>
+                    <span id="ttsStatus" class="truncate max-w-[110px] md:max-w-none">아라 가이드 대기 중</span>
+                </div>
+                <div class="hidden sm:block w-36 md:w-48 h-6 md:h-8 bg-slate-950/80 rounded-lg border border-slate-800 overflow-hidden p-1 relative">
+                    <canvas id="audioVisualizer" class="w-full h-full"></canvas>
+                </div>
+            </div>
+
+            <!-- Speech Tempo Controller Deck -->
+            <div class="bg-slate-950/60 rounded-xl p-1.5 md:p-2 border border-slate-800 flex items-center gap-1.5 md:gap-2">
+                <span class="text-[9px] md:text-[10px] text-slate-400 font-bold">재생 템포:</span>
+                <div class="flex items-center gap-0.5 md:gap-1">
+                    <button onclick="changeTempo(0.8)" id="tempoBtn-08" class="tempo-btn px-2 py-0.5 md:py-1 rounded bg-slate-800 text-[9px] md:text-[10px] font-bold text-slate-300 hover:bg-slate-700 transition">0.8x</button>
+                    <button onclick="changeTempo(1.0)" id="tempoBtn-10" class="tempo-btn px-2 py-0.5 md:py-1 rounded bg-[#2EC4B6] text-[9px] md:text-[10px] font-bold text-white transition">1.0x</button>
+                    <button onclick="changeTempo(1.2)" id="tempoBtn-12" class="tempo-btn px-2 py-0.5 md:py-1 rounded bg-slate-800 text-[9px] md:text-[10px] font-bold text-slate-300 hover:bg-slate-700 transition">1.2x</button>
+                </div>
+            </div>
+
+            <!-- Simple Progress Line -->
+            <div class="flex items-center gap-2 flex-1 md:flex-none min-w-[110px] md:min-w-[120px]">
+                <div class="flex-1 bg-white/20 h-1.5 md:h-2 rounded-full overflow-hidden">
+                    <div id="audioProgress" class="bg-[#2EC4B6] h-full rounded-full" style="width: 0%;"></div>
+                </div>
+                <span id="audioTimer" class="text-[10px] md:text-xs font-mono font-bold text-slate-400">00:00</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const SLIDES_DATA = [
+            {
+                id: 1,
+                title: "SOAP 구조화와 정확한 기록 원칙",
+                narration: "안녕하세요. 건국대학교 충주병원 피에이 간호사 경과 기록 교육입니다. 이번 교육에서는 정확하고 일관된 경과기록 작성을 위한 핵심 원칙에 대해 알아보겠습니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full text-center space-y-6 my-auto max-w-4xl pt-4">
+                        <div class="bg-[#0b3d91]/10 text-[#0b3d91] w-28 h-28 rounded-full flex items-center justify-center text-6xl shadow-inner border border-[#0b3d91]/20 animate-pulse">
+                            <i class="fa-solid fa-file-waveform text-[#2EC4B6]"></i>
+                        </div>
+                        <div class="space-y-4">
+                            <span class="bg-[#2EC4B6]/10 text-[#2EC4B6] text-sm font-extrabold px-5 py-2 rounded-full uppercase tracking-widest border border-[#2EC4B6]/20">Clinical PA Training</span>
+                            <h2 class="scale-text-title font-extrabold text-[#0B3D91] leading-tight">
+                                정확성 · 구체성 · 일관성 · 적시성
+                            </h2>
+                            <p class="scale-text-lg text-slate-700 max-w-3xl mx-auto leading-relaxed font-bold">
+                                건국대학교 충주병원 PA 간호사 입원 경과기록 초안 작성<br>교육 과정에 오신 것을 환영합니다.
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 2,
+                title: "경과기록의 본질",
+                narration: "경과기록은 단순한 업무기록이 아닙니다. 환자의 상태 변화와 치료과정을 의료진 간에 공유하고, 환자안전과 진료 연속성을 보장하는 중요한 의무기록입니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto max-w-5xl pt-4">
+                        <div class="text-center">
+                            <p class="scale-text-subtitle font-black text-[#2EC4B6] uppercase tracking-wider">Mission Statement</p>
+                            <p class="scale-text-lg text-slate-800 font-extrabold mt-1">정확한 기록은 환자 안전과 진료의 연속성을 보장합니다.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
+                                <div class="bg-[#2EC4B6]/10 text-[#2EC4B6] w-14 h-14 rounded-full flex items-center justify-center text-2xl mb-3">
+                                    <i class="fa-solid fa-heart-pulse"></i>
+                                </div>
+                                <h4 class="font-black scale-text-lg text-[#0B3D91]">효과적인 임상 소통</h4>
+                                <p class="scale-text-sm text-slate-800 mt-2 font-bold leading-relaxed">의료진 간 명확한 정보 공유<br>진료 과정의 연속성 강화<br>부서 간 원활한 협업 지원</p>
+                            </div>
+                            <div class="bg-[#0B3D91]/5 p-6 rounded-2xl border-2 border-[#0B3D91]/20 flex flex-col items-center text-center shadow">
+                                <div class="bg-[#0B3D91]/10 text-[#0b3d91] w-14 h-14 rounded-full flex items-center justify-center text-2xl mb-3">
+                                    <i class="fa-solid fa-clipboard-check"></i>
+                                </div>
+                                <h4 class="font-black scale-text-lg text-[#0B3D91]">환자 안전 강화</h4>
+                                <p class="scale-text-sm text-slate-900 mt-2 font-extrabold leading-relaxed">의료정보 누락 방지<br>의사소통 오류 감소<br>정확한 의사결정 지원</p>
+                            </div>
+                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
+                                <div class="bg-[#2EC4B6]/10 text-[#2EC4B6] w-14 h-14 rounded-full flex items-center justify-center text-2xl mb-3">
+                                    <i class="fa-solid fa-arrows-spin"></i>
+                                </div>
+                                <h4 class="font-black scale-text-lg text-[#0B3D91]">진료 연속성 확보</h4>
+                                <p class="scale-text-sm text-slate-800 mt-2 font-bold leading-relaxed">교대근무 간 정보 전달<br>부서 간 진료 연계 강화<br>일관된 환자 관리 지원</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 3,
+                title: "의무기록의 3대 충실도",
+                narration: "따라서 오늘은 에스 오 에이 피 구조화 작성 원칙과 함께 반드시 지켜야 할 의무기록 작성 기준에 대해 살펴보겠습니다. 먼저 충실도입니다. 경과기록은 기록 시점인 날짜와 시간이 정확하게 기록되어야 하며, 환자 식별정보를 통해 환자 확인이 가능해야 합니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto max-w-5xl pt-4">
+                        <div class="text-center">
+                            <p class="scale-text-subtitle font-black text-[#2EC4B6]">의무기록 3대 필수 충실도</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                            <div class="bg-white p-6 rounded-2xl border-l-8 border-[#2EC4B6] shadow border border-slate-150 flex flex-col justify-between">
+                                <div>
+                                    <div class="scale-text-xs font-black text-[#2EC4B6] uppercase">CRITERIA 01</div>
+                                    <h4 class="font-black text-[#0B3D91] scale-text-lg mt-1.5"><i class="fa-regular fa-clock mr-1.5"></i> 기록 날짜 및 시간</h4>
+                                </div>
+                                <p class="scale-text-sm text-slate-800 mt-3 leading-relaxed font-bold">모든 임상 변화 및 처치 발생 즉시 전산에 정확한 타임스탬프로 입력해야 합니다.</p>
+                            </div>
+                            <div class="bg-[#0b3d91]/5 p-6 rounded-2xl border-l-8 border-[#0B3D91] shadow border border-slate-150 flex flex-col justify-between">
+                                <div>
+                                    <div class="scale-text-xs font-black text-[#0B3D91] uppercase">CRITERIA 02</div>
+                                    <h4 class="font-black text-[#0B3D91] scale-text-lg mt-1.5"><i class="fa-solid fa-id-card mr-1.5"></i> 환자 고유 식별정보</h4>
+                                </div>
+                                <p class="scale-text-sm text-slate-900 mt-3 leading-relaxed font-extrabold">등록번호 및 환자 성명의 2단계 교차 검증은 의료 사고를 원천 방지합니다.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl border-l-8 border-[#2EC4B6] shadow border border-slate-150 flex flex-col justify-between">
+                                <div>
+                                    <div class="scale-text-xs font-black text-[#2EC4B6] uppercase">CRITERIA 03</div>
+                                    <h4 class="font-black text-[#0B3D91] scale-text-lg mt-1.5"><i class="fa-solid fa-signature mr-1.5"></i> 작성자 본인 서명</h4>
+                                </div>
+                                <p class="scale-text-sm text-slate-800 mt-3 leading-relaxed font-bold">전산 공인인증이 적용된 작성자 고유 서명으로 법적 귀책을 규정합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 4,
+                title: "환자 상태 변화의 기록",
+                narration: "또한 환자의 상태 변화, 검사결과 변화, 치료 또는 처치 내용이 있는 경우 반드시 기록해야 합니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto max-w-5xl pt-4">
+                        <div class="text-center">
+                            <p class="scale-text-subtitle font-black text-[#2EC4B6]">반드시 기록해야 할 3가지 핵심 요인</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm">
+                                <span class="scale-text-xs font-black text-[#2EC4B6] bg-[#2EC4B6]/10 px-3 py-1 rounded-full">01. 임상 및 증상</span>
+                                <h4 class="font-black scale-text-lg text-[#0B3D91] mt-4">임상 상태 및 증상 변화</h4>
+                                <div class="h-[2px] bg-slate-200 my-2"></div>
+                                <p class="scale-text-sm text-slate-800 leading-relaxed font-bold">
+                                    • 통증 강도 및 양상 변화<br>
+                                    • 발열 및 오한 상태 발현<br>
+                                    • 바이탈 사인(V/S)의 유의미한 변동<br>
+                                    • 의식 상태 및 신경학적 평가 소견
+                                </p>
+                            </div>
+                            <div class="bg-[#0b3d91]/5 p-6 rounded-2xl border border-[#0b3d91]/20 shadow-sm">
+                                <span class="scale-text-xs font-black text-[#0B3D91] bg-[#0b3d91]/10 px-3 py-1 rounded-full">02. 진단 및 검사</span>
+                                <h4 class="font-black scale-text-lg text-[#0B3D91] mt-4">진단 및 검사결과 변화</h4>
+                                <div class="h-[2px] bg-slate-200 my-2"></div>
+                                <p class="scale-text-sm text-slate-900 leading-relaxed font-extrabold">
+                                    • 중요 이상 검사결과 소견 발현<br>
+                                    • 검사실 보고(Critical Value) 검출<br>
+                                    • 최신 영상 검증 판독 결과 변화<br>
+                                    • 임상 진단명의 신규 반영 및 정정
+                                </p>
+                            </div>
+                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm">
+                                <span class="scale-text-xs font-black text-[#2EC4B6] bg-[#2EC4B6]/10 px-3 py-1 rounded-full">03. 치료 및 처치</span>
+                                <h4 class="font-black scale-text-lg text-[#0B3D91] mt-4">치료 및 처치 수행</h4>
+                                <div class="h-[2px] bg-slate-200 my-2"></div>
+                                <p class="scale-text-sm text-slate-800 leading-relaxed font-bold">
+                                    • 약물의 개시, 중단 및 용량 변경<br>
+                                    • 처치, 시술 및 배액 드레싱 교체<br>
+                                    • 혈액 제제 투여(수혈) 경과 모니터<br>
+                                    • 산소 공급량 및 산소치료 수행
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 5,
+                title: "SOAP 개요 및 구분 원칙",
+                narration: "특히 경과기록을 작성하실 때는 주관적 서술인 에스, 객관적 관측인 오, 의학적 평가인 에이, 그리고 처치 계획인 피를 철저하게 구분하여 작성해 주셔야 합니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto max-w-5xl pt-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+                            <div class="bg-slate-50 border-t-4 border-[#0B3D91] p-5 rounded-xl flex flex-col justify-between h-56 shadow-sm">
+                                <span class="text-4xl font-black text-[#0B3D91]">S</span>
+                                <h4 class="font-black scale-text-sm text-[#0B3D91] uppercase">Subjective (주관적 자료)</h4>
+                                <p class="scale-text-xs text-slate-850 font-bold leading-normal">
+                                    • 환자·보호자가 느끼고 표현한 내용<br>
+                                    • 자각적인 고통의 기록<br>
+                                    • 환자의 원문 진술 반영
+                                </p>
+                            </div>
+                            <div class="bg-slate-50 border-t-4 border-[#2EC4B6] p-5 rounded-xl flex flex-col justify-between h-56 shadow-sm">
+                                <span class="text-4xl font-black text-[#2EC4B6]">O</span>
+                                <h4 class="font-black scale-text-sm text-[#0B3D91] uppercase">Objective (객관적 관측)</h4>
+                                <p class="scale-text-xs text-slate-850 font-bold leading-normal">
+                                    • 정량적 측정 및 관찰 수치<br>
+                                    • 활력징후, 신체검진 지표<br>
+                                    • 혈액 검사 및 영상 판독 결과
+                                </p>
+                            </div>
+                            <div class="bg-[#0b3d91]/5 border-t-4 border-[#0B3D91] p-5 rounded-xl flex flex-col justify-between h-56 shadow-md">
+                                <span class="text-4xl font-black text-[#0B3D91]">A</span>
+                                <h4 class="font-black scale-text-sm text-[#0B3D91] uppercase">Assessment (의학적 평가)</h4>
+                                <p class="scale-text-xs text-slate-900 font-extrabold leading-normal">
+                                    • 주관적·객관적 정보의 분석<br>
+                                    • 감염 및 탈수 의심 임상 판단<br>
+                                    • 발생 요인 규명 및 진행 상태
+                                </p>
+                            </div>
+                            <div class="bg-slate-50 border-t-4 border-[#2EC4B6] p-5 rounded-xl flex flex-col justify-between h-56 shadow-sm">
+                                <span class="text-4xl font-black text-[#2EC4B6]">P</span>
+                                <h4 class="font-black scale-text-sm text-[#0B3D91] uppercase">Plan (처치 계획)</h4>
+                                <p class="scale-text-xs text-slate-850 font-bold leading-normal">
+                                    • 향후 진단 및 투약 진행 계획<br>
+                                    • 정밀 추적 검사 일정 수립<br>
+                                    • 환자 교육 및 상시 모니터링
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 6,
+                title: "루틴적 Copy & Paste 금지",
+                narration: "가끔 바쁜 업무 중에 어제 작성한 기록을 그대로 복사하여 사용하는 경우가 있습니다. 하지만 아무런 수정 없이 이전 기록을 반복하는 이른바 '루틴적 카피 앤 페이스트'는 환자 상태의 변화 추이를 숨길 수 있기 때문에 반드시 주의해야 합니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto max-w-4xl pt-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                            <div class="bg-red-50 p-6 rounded-2xl border border-red-200 shadow-sm flex flex-col justify-between">
+                                <span class="scale-text-sm font-black text-red-600 bg-red-100 px-3 py-1 rounded-full w-max"><i class="fa-solid fa-xmark"></i> WRONG (불성실 서식)</span>
+                                <p class="scale-text-base text-slate-800 font-mono mt-4 line-through leading-relaxed font-bold">
+                                    "V/S Stable, 증상 없음."<br>
+                                    (환자의 수술 창상에 삼출액이 매일 폭발적으로 늘고 있음에도 3일 연속 그대로 복제해 붙인 경우)
+                                </p>
+                            </div>
+                            <div class="bg-[#2EC4B6]/10 p-6 rounded-2xl border-2 border-[#2EC4B6]/40 shadow-md flex flex-col justify-between animate-pulse">
+                                <span class="scale-text-sm font-black text-[#2EC4B6] bg-white/60 px-3 py-1 rounded-full w-max"><i class="fa-solid fa-check"></i> CORRECT (일일 동태 기술)</span>
+                                <p class="scale-text-base text-[#0B3D91] font-extrabold mt-4 leading-relaxed">
+                                    "기침 횟수 10회/일 → 3회/일로 감소함"<br>
+                                    "우측 복부 수술 부위 드레싱에서 황색 삼출물 약 2cm 범위 관찰됨"
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 7,
+                title: "Subjective (S): 주관적 자료",
+                narration: "다음으로 주관적 자료인 에스 항목입니다. 에스는 환자나 보호자, 또는 간병인이 직접 표현한 내용을 기록하는 영역입니다. 환자가 고통이나 불편감을 표현할 때에는 의료진이 임의로 요약하기보다는 가능한 범위 내에서 실제 원문 진술을 반영하여 기록해 주시는 것이 좋습니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto text-center max-w-4xl pt-4">
+                        <div class="bg-slate-50 p-6 rounded-2xl border-l-8 border-[#2EC4B6] shadow-sm flex items-start gap-4 text-left w-full">
+                            <div class="text-[#2EC4B6] text-5xl font-serif leading-none mt-1">“</div>
+                            <div class="flex-1 space-y-3">
+                                <span class="scale-text-sm font-black text-[#0B3D91] bg-[#0b3d91]/10 px-3 py-1 rounded uppercase tracking-wider block w-max">환자의 호소 양상</span>
+                                <p class="scale-text-xl font-bold text-slate-900 italic">
+                                    "배꼽 주위가 어제 저녁부터 쥐어짜듯이 아팠다가 가라앉았다해요(NRS 7점)"
+                                </p>
+                                <p class="scale-text-sm text-slate-800 border-t border-slate-200 pt-3 font-bold leading-relaxed">
+                                    <span class="text-red-600 font-black">중요 지침:</span> '복통 호소함' 또는 '복통 관찰됨'으로 지나치게 모호하게 요약하지 말고, 증상의 국소 위치와 표현법을 생생하게 기술합니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 8,
+                title: "주관적 정보(S) 기록의 구체화",
+                narration: "또한 증상이 있는 경우에는 발생 시점, 위치, 양상, 지속시간 등의 정보를 가능한 한 구체적으로 기록해야 합니다. 통증이 있는 경우에는 엔 아르 에스와 같은 공인된 통증척도를 활용하여 강도를 함께 기록해 주시기 바랍니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto max-w-4xl pt-4">
+                        <!-- NRS Pain Scale Graphics -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 w-full shadow-sm">
+                            <span class="scale-text-sm font-black text-[#0B3D91] block text-center mb-3">통증 평가지표 (NRS 척도)</span>
+                            <div class="grid grid-cols-11 gap-1 text-center font-mono text-sm font-black text-slate-700">
+                                <div class="bg-[#2EC4B6]/15 text-[#2EC4B6] p-2 rounded">0</div>
+                                <div class="bg-slate-100 p-2 rounded">1</div>
+                                <div class="bg-slate-100 p-2 rounded">2</div>
+                                <div class="bg-[#0b3d91]/10 text-[#0b3d91] p-2 rounded">3</div>
+                                <div class="bg-[#0b3d91]/20 text-[#0b3d91] p-2 rounded">4</div>
+                                <div class="bg-[#0b3d91] text-white p-2 rounded animate-pulse">5</div>
+                                <div class="bg-red-400 text-white p-2 rounded">6</div>
+                                <div class="bg-red-500 text-white p-2 rounded">7</div>
+                                <div class="bg-red-600 text-white p-2 rounded">8</div>
+                                <div class="bg-red-700 text-white p-2 rounded">9</div>
+                                <div class="bg-red-900 text-white p-2 rounded font-black">10</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full text-center">
+                            <div class="bg-slate-50 p-3 rounded-xl border-b-4 border-[#0B3D91] shadow-sm">
+                                <span class="font-extrabold scale-text-xs text-[#0B3D91] block">발생 시점 (Onset)</span>
+                                <span class="scale-text-base text-slate-800 block mt-1.5 font-black">"금일 09:00"</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border-b-4 border-[#2EC4B6] shadow-sm">
+                                <span class="font-extrabold scale-text-xs text-[#2EC4B6] block">위치 (Location)</span>
+                                <span class="scale-text-base text-slate-800 block mt-1.5 font-black">"우하복부 (RLQ)"</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border-b-4 border-[#0B3D91] shadow-sm">
+                                <span class="font-extrabold scale-text-xs text-[#0B3D91] block">양상 (Character)</span>
+                                <span class="scale-text-base text-slate-800 block mt-1.5 font-black">"찌르는 듯함"</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border-b-4 border-[#2EC4B6] shadow-sm">
+                                <span class="font-extrabold scale-text-xs text-[#2EC4B6] block">강도 (Intensity)</span>
+                                <span class="scale-text-base text-slate-800 block mt-1.5 font-black">"NRS 5점"</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 9,
+                title: "무증상 및 의사소통 불가 환자 기록",
+                narration: "반대로 특별한 증상이나 불편감이 없는 경우에도 환자 상태와 관련된 주요 증상이 없다는 사실을 기록하는 것이 중요합니다. 그리고 의사소통이 어려운 환자의 경우에는 의식저하로 증상 확인 어려움과 같이 확인이 어려운 사유를 함께 기록해야 합니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto max-w-4xl pt-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-300 shadow-sm flex flex-col justify-between">
+                                <span class="scale-text-base font-black text-[#2EC4B6] block"><i class="fa-solid fa-bell-slash"></i> 1. 명확한 자각 증상 부재 시</span>
+                                <div class="bg-white p-4 rounded-xl font-mono scale-text-sm text-[#0B3D91] mt-4 border border-slate-200 font-extrabold leading-relaxed">
+                                    "특이 불편감 호소 없음."<br>"환자 특이 증상 없이 안정 상태 유지함."<br>"새로운 증상 호소 없음."
+                                </div>
+                            </div>
+                            <div class="bg-[#0b3d91]/5 p-6 rounded-2xl border border-[#0b3d91]/30 shadow-sm flex flex-col justify-between">
+                                <span class="scale-text-base font-black text-[#0B3D91] block"><i class="fa-solid fa-user-xmark"></i> 2. 의사소통 불가 상태 시</span>
+                                <div class="bg-white p-4 rounded-xl font-mono scale-text-sm text-[#0B3D91] mt-4 border border-slate-200 font-extrabold leading-relaxed">
+                                    "의식저하로 주관적 증상 확인 어려움."<br>"기관 삽관 상태로 임상 의사소통 불가함."<br>"진정 상태 유지 중으로 자각 증상 확인 불가함."
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 10,
+                title: "O, A, P 영역에서의 주관적 표현 배제",
+                narration: "세 번째는 객관적 자료인 오와 평가인 에이, 그리고 계획인 피입니다. 여기서 중요한 점은 에스를 제외한 오, 에이, 피 영역에서는 모호한 표현을 사용해서는 안 된다는 것입니다. 예를 들어 조금 나아짐, 약간 불편함, 통증이 경하게 관찰됨과 같은 표현이나 호전되는 것 같음, 위치 이탈 없어 보임과 같은 추정 표현은 객관적인 근거가 부족하기 때문에 사용하지 않는 것이 원칙입니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto max-w-4xl pt-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-300 shadow-sm">
+                                <span class="scale-text-base font-black text-red-600 bg-red-100 px-4 py-1.5 rounded-full">사용 지향 (Bad)</span>
+                                <ul class="list-disc list-inside space-y-3 text-[#1E293B] mt-5 font-bold scale-text-sm">
+                                    <li>"V/S stable"</li>
+                                    <li>"배액관 삼출물 양 약간 호전되어 양호해 보임"</li>
+                                    <li>"mild fever"</li>
+                                    <li>"약간의 열이 관찰됨"</li>
+                                </ul>
+                            </div>
+                            <div class="bg-[#0b3d91]/5 p-6 rounded-2xl border-2 border-[#2EC4B6]/40 shadow-md">
+                                <span class="scale-text-base font-black text-[#2EC4B6] bg-white px-4 py-1.5 rounded-full border border-[#2EC4B6]/30">적극 권장 (Good - 정량 명시)</span>
+                                <ul class="list-disc list-inside space-y-3 text-[#1E293B] mt-5 font-black scale-text-sm">
+                                    <li>"호흡수 18회/분, SpO2 98% 측정됨"</li>
+                                    <li>"JP drain 24시간동안 40cc 배액됨"</li>
+                                    <li>"BP 120/70, BT 36.5, HR 75, RR 18 측정됨"</li>
+                                    <li>"고막 체온 37.6도 측정됨"</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 11,
+                title: "Objective (O): 객관적 관측",
+                narration: "먼저 오프젝티브는 관찰과 측정을 통해 확인된 사실을 기록하는 부분입니다. 활력징후, 신체검진 결과, 검사결과, 모니터링 수치 등을 객관적으로 기록해야 합니다. 따라서 브이에스 스테이블이나 마일드 피버와 같은 표현보다는 실제 측정된 체온과 혈압 수치를 기록해야 합니다. 즉, 관찰된 사실과 검사 결과, 그리고 정량적인 수치를 중심으로 기록하는 것이 중요합니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-4 w-full my-auto max-w-4xl pt-4">
+                        <!-- Simulated Patient Vital Dashboard -->
+                        <div class="bg-slate-900 p-4 rounded-xl text-[#2EC4B6] font-mono border border-slate-700 shadow-lg w-full">
+                            <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-2 mb-3">
+                                <span>EMR VITAL MONITOR FEED (REALTIME)</span>
+                                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span> ONLINE</span>
+                            </div>
+                            <div class="grid grid-cols-4 gap-3 text-center text-sm">
+                                <div class="bg-white/5 p-3 rounded">
+                                    <span class="scale-text-xs text-slate-400 block uppercase font-bold">BP</span>
+                                    <p class="scale-text-lg font-black text-white mt-1">138/85</p>
+                                    <span class="text-[10px] text-slate-400">mmHg</span>
+                                </div>
+                                <div class="bg-white/5 p-3 rounded">
+                                    <span class="scale-text-xs text-slate-400 block uppercase font-bold">HR</span>
+                                    <p class="scale-text-lg font-black text-white mt-1">88</p>
+                                    <span class="text-[10px] text-slate-400">bpm</span>
+                                </div>
+                                <div class="bg-[#2EC4B6]/10 border border-[#2EC4B6]/30 p-3 rounded animate-pulse">
+                                    <span class="scale-text-xs text-[#2EC4B6] block uppercase font-bold">BT</span>
+                                    <p class="scale-text-lg font-black text-white mt-1">38.2</p>
+                                    <span class="text-[10px] text-red-500 font-bold">℃ (Fever)</span>
+                                </div>
+                                <div class="bg-white/5 p-3 rounded">
+                                    <span class="scale-text-xs text-slate-400 block uppercase font-bold">SpO2</span>
+                                    <p class="scale-text-lg font-black text-white mt-1">97</p>
+                                    <span class="text-[10px] text-slate-400">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-300 flex justify-between items-center text-base font-black w-full shadow-sm">
+                            <span class="text-red-500 line-through">"약간의 열이 나심 (X)"</span>
+                            <i class="fa-solid fa-arrow-right text-[#2EC4B6] text-xl"></i>
+                            <span class="text-[#0B3D91]">"고막 체온 38.2 ℃ 측정됨 (O)"</span>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 12,
+                title: "Assessment (A): 종합 평가",
+                narration: "에세스먼트는 환자의 현재 상태를 종합적으로 평가하는 단계입니다. 주관적 자료와 객관적 자료를 근거로 현재 환자의 주요 문제를 기술합니다. 예를 들어 탈수 의심, 감염 의심, 기립성 저혈압 의심과 같은 임상적 판단 또는 진단명을 기록할 수 있습니다. 이때 가장 중요하며 핵심적인 점은 에세스먼트가 반드시 에스와 오의 내용에 근거하여 작성되어야 한다는 것입니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto max-w-5xl pt-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch w-full text-center">
+                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-300 flex flex-col justify-center items-center shadow-sm">
+                                <span class="bg-[#0B3D91]/10 text-[#0B3D91] scale-text-sm px-4 py-1.5 rounded-full font-black">S (주관적 호소)</span>
+                                <p class="mt-4 scale-text-base text-slate-800 font-extrabold leading-relaxed">"갑자기 어제 저녁부터 머리가 핑 돌며 주저앉을 정도로 어지러워요"</p>
+                            </div>
+                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-300 flex flex-col justify-center items-center shadow-sm">
+                                <span class="bg-[#2EC4B6]/10 text-[#2EC4B6] scale-text-sm px-4 py-1.5 rounded-full font-black">O (객관적 지표)</span>
+                                <p class="mt-4 scale-text-base text-slate-800 font-extrabold leading-relaxed">앙와위 대비 직립 기립 시 수축기 혈압 25mmHg 즉각 감소함 확인</p>
+                            </div>
+                            <div class="bg-[#0b3d91] p-6 rounded-2xl text-white shadow-xl border-2 border-[#2EC4B6] flex flex-col justify-center items-center animate-pulse">
+                                <span class="bg-[#2EC4B6] text-slate-900 scale-text-sm px-4 py-1.5 rounded-full font-black">A (종합 평가)</span>
+                                <p class="mt-4 scale-text-base font-black text-white leading-relaxed">"기립성 저혈압 의심<br>(Orthostatic Hypotension)"</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 13,
+                title: "Plan (P): 향후 치료 및 관리 계획",
+                narration: "피는 향후 치료 및 관리 계획을 의미합니다. 약물 투여 계획, 검사 계획, 처치 계획, 협진 계획, 추적관찰 계획 등을 기록해야 하며, 환자 상태 변화가 있는 경우에는 경과관찰이나 추가 검사 계획을 함께 기록해야 합니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-4 w-full my-auto max-w-5xl pt-2">
+                        <div class="grid grid-cols-2 gap-4 w-full text-left">
+                            <!-- Top Box 1: 약물 계획 -->
+                            <div class="bg-slate-50 p-4 rounded-xl border-t-4 border-[#0B3D91] flex flex-col justify-between min-h-[175px] shadow-sm">
+                                <h4 class="scale-text-sm text-[#0B3D91] font-black"><i class="fa-solid fa-capsules mr-1"></i> 약물 시작·용량 변경·중단 계획 수립</h4>
+                                <div class="bg-[#2EC4B6]/10 p-2.5 rounded-lg border border-[#2EC4B6]/30 text-xs font-bold text-slate-800 mt-2 leading-relaxed">
+                                    <span class="text-[#0B3D91] block mb-0.5">💡 임상 예시:</span>
+                                    (예: 지속적인 발열양상으로 항생제 ceftriaxone 2g QD에서 Tazobactam 4.5g TID로 변경)
+                                </div>
+                            </div>
+                            
+                            <!-- Top Box 2: 추적 검사 계획 -->
+                            <div class="bg-slate-50 p-4 rounded-xl border-t-4 border-[#2EC4B6] flex flex-col justify-between min-h-[175px] shadow-sm">
+                                <h4 class="scale-text-sm text-[#0B3D91] font-black"><i class="fa-solid fa-vial mr-1"></i> 혈액검사 등 추적 검사 일정 계획 수립</h4>
+                                <div class="bg-[#2EC4B6]/10 p-2.5 rounded-lg border border-[#2EC4B6]/30 text-xs font-bold text-slate-800 mt-2 leading-relaxed">
+                                    <span class="text-[#0B3D91] block mb-0.5">💡 임상 예시:</span>
+                                    (예: 익일 CBC, CRP 추적 검사 예정.)
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom Box 1: 협진 계획 -->
+                            <div class="bg-slate-50 p-4 rounded-xl border-t-4 border-[#0B3D91] flex flex-col justify-between min-h-[175px] shadow-sm">
+                                <h4 class="scale-text-sm text-[#0B3D91] font-black"><i class="fa-solid fa-user-doctor mr-1"></i> 타과 협진 요청 사유 명시 및 계획 수립</h4>
+                                <div class="bg-[#2EC4B6]/10 p-2.5 rounded-lg border border-[#2EC4B6]/30 text-xs font-bold text-slate-800 mt-2 leading-relaxed">
+                                    <span class="text-[#0B3D91] block mb-0.5">💡 임상 예시:</span>
+                                    (예: 당뇨조절을 위해 내분비 내과 협진 예정.)
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom Box 2: 경과 관찰 -->
+                            <div class="bg-slate-50 p-4 rounded-xl border-t-4 border-[#2EC4B6] flex flex-col justify-between min-h-[175px] shadow-sm">
+                                <h4 class="scale-text-sm text-[#0B3D91] font-black"><i class="fa-solid fa-eye mr-1"></i> 주요 증상에 대한 지속적 모니터링 계획 수립</h4>
+                                <div class="bg-[#2EC4B6]/10 p-2.5 rounded-lg border border-[#2EC4B6]/30 text-xs font-bold text-slate-800 mt-2 leading-relaxed">
+                                    <span class="text-[#0B3D91] block mb-0.5">💡 임상 예시:</span>
+                                    (예: V/S 및 수술부위 통증 추적 관찰 예정.)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 14,
+                title: "표준 용어 사용지침",
+                narration: "네 번째는 표준 의학용어 사용과 금기 약어 사용 금지입니다. 의무기록은 여러 의료진이 함께 보는 기록입니다. 따라서 누구나 동일하게 이해할 수 있도록 표준 의학용어를 사용해야 하며, 병원에서 지정한 금기 약어는 사용하지 않아야 합니다. 의료 현장에서 단어 하나를 부정확하게 축약하는 것만으로도 환자안전에 큰 영향을 줄 수 있습니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto text-center max-w-4xl pt-4">
+                        <div class="bg-slate-50 p-8 rounded-2xl border border-slate-300 flex flex-col md:flex-row items-center gap-6 w-full shadow-md">
+                            <div class="bg-[#0B3D91]/10 text-[#0B3D91] p-5 rounded-full text-5xl shrink-0 border border-[#0B3D91]/20">
+                                <i class="fa-solid fa-signature"></i>
+                            </div>
+                            <div class="text-left space-y-3 flex-1">
+                                <h4 class="font-black text-[#0B3D91] scale-text-lg">임상 용어 선택 기본 수칙</h4>
+                                <ul class="space-y-2 text-slate-800 font-extrabold scale-text-base list-disc list-inside">
+                                    <li>임의 약어 · 단축어 배제</li>
+                                    <li>표준 의학용어 사용</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 15,
+                title: "원내 5대 금기약어",
+                narration: "예를 들어 아이유는 아이브이로 오인될 수 있으므로 반드시 유닛으로 작성해야 합니다. 티아이더블유는 주 3회로, 엠지는 엠씨지 또는 마이크로그램으로 기록해야 합니다. 디씨 역시 상황에 따라 의미가 달라질 수 있으므로 디스차지로 풀어서 작성하고, 정확성과 명확성을 위해 물음표 사용도 금지해야 합니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-4 w-full my-auto max-w-5xl pt-4">
+                        <div class="overflow-y-auto max-h-[380px] border-2 border-slate-300 rounded-2xl shadow-xl w-full">
+                            <table class="w-full text-left border-collapse bg-white">
+                                <thead>
+                                    <tr class="bg-slate-100 text-[#0B3D91] border-b-2 border-slate-300 font-black">
+                                        <th class="py-4 px-6 text-center font-black scale-text-base text-[#0B3D91] bg-slate-200">금지 약어</th>
+                                        <th class="py-4 px-6 font-black scale-text-base text-[#0B3D91]">문제점</th>
+                                        <th class="py-4 px-6 font-black scale-text-base bg-emerald-50 text-emerald-800 border-l border-emerald-200">권장 되는 용어</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 text-[#1E293B] scale-text-sm">
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="py-3 px-6 text-center font-black bg-red-100 text-red-700 border-r border-red-200 scale-text-base">IU</td>
+                                        <td class="py-3 px-6 text-black font-extrabold leading-tight">정맥 주사(IV)로 오인</td>
+                                        <td class="py-3 px-6 font-black bg-emerald-50 text-emerald-800 border-l border-emerald-150"><i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>Unit</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="py-3 px-6 text-center font-black bg-red-100 text-red-700 border-r border-red-200 scale-text-base">TIW</td>
+                                        <td class="py-3 px-6 text-black font-extrabold leading-tight">TID(하루 3회)로 오인</td>
+                                        <td class="py-3 px-6 font-black bg-emerald-50 text-emerald-800 border-l border-emerald-150"><i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>three times a week (주 3회)</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="py-3 px-6 text-center font-black bg-red-100 text-red-700 border-r border-red-200 scale-text-base">D/C</td>
+                                        <td class="py-3 px-6 text-black font-extrabold leading-tight">투약 중지로 오인</td>
+                                        <td class="py-3 px-6 font-black bg-emerald-50 text-emerald-800 border-l border-emerald-150"><i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>Discharge</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="py-3 px-6 text-center font-black bg-red-100 text-red-700 border-r border-red-200 scale-text-base">m.g</td>
+                                        <td class="py-3 px-6 text-black font-extrabold leading-tight">mg으로 오인</td>
+                                        <td class="py-3 px-6 font-black bg-emerald-50 text-emerald-800 border-l border-emerald-150"><i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>Mcg.</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="py-3 px-6 text-center font-black bg-red-100 text-red-700 border-r border-red-200 scale-text-base">? (물음표)</td>
+                                        <td class="py-3 px-6 text-black font-extrabold leading-tight">정확하고 명확해야 하는 기록에 물음표는 혼선 가능성 존재</td>
+                                        <td class="py-3 px-6 font-black bg-emerald-50 text-emerald-800 border-l border-emerald-150"><i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>? 기호 사용 금지</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 16,
+                title: "안전 및 책임 기록: 약물 이벤트 작성법",
+                narration: "안전 및 책임 기록은 의무기록이 갖는 중요한 법적 근거가 되는 영역입니다. 약물 변경이나 약물 이상반응이 발생한 경우에는 해당 약물명과 조치 내용을 객관적이고 시간순으로 기록해야 합니다. 예를 들어 페니라민 1앰플 주사 투여 후 14시 30분 체온 36.8도 및 이상 소견 확인되지 않음 처럼 시간과 정량적 수치를 바탕으로 명세해야 합니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-4 w-full my-auto max-w-5xl pt-4">
+                        <div class="grid grid-cols-2 gap-4 w-full text-left">
+                            <div class="bg-slate-50 p-5 rounded-xl border-l-4 border-[#0B3D91] shadow-sm flex flex-col justify-between">
+                                <span class="scale-text-xs font-black text-[#0B3D91] uppercase">01. 기록 원칙</span>
+                                <p class="scale-text-sm text-slate-800 font-extrabold mt-1.5 leading-relaxed">
+                                    • 객관성: 추측성 묘사 배제 후 사실만 기록<br>
+                                    • 시간순: 증상 관찰 및 중재 시간 분 단위 작성<br>
+                                    • 수치 중심: 임상 수치 및 관찰 결과를 수치화
+                                </p>
+                            </div>
+                            <div class="bg-slate-50 p-5 rounded-xl border-l-4 border-[#2EC4B6] shadow-sm flex flex-col justify-between">
+                                <span class="scale-text-xs font-black text-[#2EC4B6] uppercase">02. 필수 기록 항목</span>
+                                <p class="scale-text-sm text-slate-800 font-extrabold mt-1.5 leading-relaxed">
+                                    • 원인 약물의 명칭 및 투여 경로<br>
+                                    • 조치 시행 및 이상 소견 관찰 시간<br>
+                                    • 이상 징후 발생 당시의 활력징후(V/S)<br>
+                                    • 중재(약물 투여 등) 전후의 상태 변화
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Bottom One-liner core message -->
+                        <div class="bg-[#2EC4B6]/10 p-4 rounded-xl border border-[#2EC4B6]/30 w-full text-center">
+                            <p class="scale-text-base text-[#0B3D91] font-black">
+                                "정확한 시간과 정량적 수치 중심의 의무기록은 환자 안전과 법적 보호의 핵심 기준입니다."
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 17,
+                title: "안전 및 책임 기록 2: 원내 유해 사건",
+                narration: "또한 낙상, 욕창, 수혈 관련 이상반응, 중요한 라인 또는 튜브 관련 문제가 발생한 경우에도 발생 상황과 조치 내용을 기록해야 합니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto max-w-5xl text-center pt-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                            <div class="bg-slate-50 p-6 rounded-2xl border-t-4 border-[#0B3D91] shadow-sm flex flex-col justify-between">
+                                <span class="text-[#0B3D91] block scale-text-lg font-black mb-1.5"><i class="fa-solid fa-person-falling mr-1.5"></i> 낙상 발생</span>
+                                <div class="h-[2px] bg-slate-200 mb-3"></div>
+                                <p class="scale-text-sm text-slate-800 font-bold leading-relaxed text-left">
+                                    • 발생 일시, 장소 및 당시 상황 기록<br>
+                                    • 환자 외상상태 및 신체 평가 결과 기록<br>
+                                    • 후속 조치 내용 기록
+                                </p>
+                            </div>
+                            <div class="bg-slate-50 p-6 rounded-2xl border-t-4 border-[#2EC4B6] shadow-sm flex flex-col justify-between">
+                                <span class="text-[#0B3D91] block scale-text-lg font-black mb-1.5"><i class="fa-solid fa-bed mr-1.5"></i> 욕창 발생</span>
+                                <div class="h-[2px] bg-slate-200 mb-3"></div>
+                                <p class="scale-text-sm text-slate-800 font-bold leading-relaxed text-left">
+                                    • 발생 부위 및 피부 상태 기록<br>
+                                    • 욕창 단계 및 크기 기록<br>
+                                    • 시행한 처치 및 예방 활동 기록
+                                </p>
+                            </div>
+                            <div class="bg-slate-50 p-6 rounded-2xl border-t-4 border-[#0B3D91] shadow-sm flex flex-col justify-between">
+                                <span class="text-[#0B3D91] block scale-text-lg font-black mb-1.5"><i class="fa-solid fa-circle-nodes mr-1.5"></i> 중요 라인/튜브 문제</span>
+                                <div class="h-[2px] bg-slate-200 mb-3"></div>
+                                <p class="scale-text-sm text-slate-800 font-bold leading-relaxed text-left">
+                                    • 라인/튜브의 폐색, 손상, 위치 이상 발생 등 기록<br>
+                                    • 환자 상태 변화 및 시행한 조치 내용 기록<br>
+                                    • 재삽입 여부
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 18,
+                title: "안전 및 책임 기록 3: 설명 및 동의 기록",
+                narration: "아울러 환자나 보호자에게 추가 검사, 시술, 치료 또는 관리계획에 대해 설명한 경우에도 그 내용을 기록하는 것이 중요합니다. 이러한 기록은 환자안전 확보뿐 아니라 법적 책임과 진료 연속성 측면에서도 매우 중요한 의미를 가집니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto max-w-5xl pt-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full text-left">
+                            <div class="bg-slate-50 p-6 rounded-2xl border-l-8 border-[#0B3D91] shadow-sm">
+                                <h4 class="font-black scale-text-lg text-[#0B3D91]"><i class="fa-solid fa-chalkboard-user mr-2"></i> 환자/보호자 설명 후 기록</h4>
+                                <div class="h-[2px] bg-slate-200 my-2"></div>
+                                <p class="scale-text-base text-slate-800 leading-relaxed font-bold">
+                                    추가 검사, 시술, 치료 및 관리계획에 대해 설명한 후 그 내용을 기록한다.
+                                </p>
+                            </div>
+                            <div class="bg-[#0b3d91]/5 p-6 rounded-2xl border-l-8 border-[#2EC4B6] shadow-md">
+                                <h4 class="font-black scale-text-lg text-[#0B3D91]"><i class="fa-solid fa-shield-halved mr-2"></i> 법적 책임의 근거</h4>
+                                <div class="h-[2px] bg-slate-200 my-2"></div>
+                                <p class="scale-text-base text-slate-900 leading-relaxed font-extrabold">
+                                    해당 기록은 법적 책임의 근거이자 진료 연속성 유지에 중요한 의미를 가진다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 19,
+                title: "기록의 적시성과 완결성",
+                narration: "마지막으로 적시성과 일관성입니다. 아무리 좋은 내용의 기록이라도 작성 시기가 늦어지면 기록의 가치가 감소하게 됩니다. 따라서 모든 처치와 경과관찰 기록은 환자 상태 변화 또는 처치 후 24시간 이내에 작성해야 합니다. 또한 의사 경과기록은 수술기록, 처방기록, 간호기록과 서로 일치해야 합니다. 시간대가 다르거나 내용이 상충되는 기록은 의료진 간 혼선을 초래할 수 있기 때문에 반드시 확인이 필요합니다. 그리고 퇴원 당일에는 자의퇴원, 전원, 사망 등 구체적인 퇴원 형태를 기록해야 합니다.",
+                contentHtml: `
+                    <div class="flex flex-col md:flex-row gap-6 items-stretch w-full max-w-5xl my-auto pt-4">
+                        <!-- Left Side: 기록의 적시성 -->
+                        <div class="flex-1 bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col justify-between space-y-4 shadow-sm">
+                            <div>
+                                <span class="bg-[#2EC4B6]/10 text-[#2EC4B6] scale-text-sm font-black px-3 py-1.5 rounded-full uppercase"><i class="fa-regular fa-clock mr-1.5"></i> 기록의 적시성</span>
+                                <h4 class="font-black scale-text-lg text-[#0B3D91] mt-3">작성 가이드라인</h4>
+                                <p class="scale-text-base text-slate-800 mt-1.5 font-bold">환자 상태 변화 발생 시 및 치료 중재 후 즉시 기록한다.</p>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="w-full bg-[#0B3D91]/10 rounded-full h-5 relative overflow-hidden">
+                                    <div class="bg-[#2EC4B6] h-full animate-pulse" style="width: 100%;"></div>
+                                </div>
+                                <div class="flex justify-between text-xs text-slate-500 font-bold">
+                                    <span class="text-emerald-600 font-black">실시간 발생 즉시 기록 (가장 안전)</span>
+                                    <span class="text-slate-500"> 최소 24시간내 기록</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: 완결성 (의료기록 일치성) -->
+                        <div class="flex-1 bg-[#0b3d91]/5 p-6 rounded-2xl border border-[#0b3d91]/10 flex flex-col justify-between space-y-3 text-left shadow-md">
+                            <div>
+                                <span class="bg-[#0B3D91]/10 text-[#0B3D91] scale-text-sm font-black px-3 py-1.5 rounded-full uppercase"><i class="fa-solid fa-code-compare mr-1.5"></i> 의료기록 일치성</span>
+                                <h4 class="font-black text-[#0B3D91] scale-text-lg mt-3">문서 간 일관성 원칙</h4>
+                            </div>
+                            <div class="space-y-2 scale-text-sm">
+                                <div class="flex items-start gap-2 text-slate-900 font-extrabold">
+                                    <i class="fa-solid fa-circle-check text-[#2EC4B6] mt-1 shrink-0"></i>
+                                    <span>수술·외래·처방·간호기록 간 내용 일치 유지</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-slate-900 font-extrabold">
+                                    <i class="fa-solid fa-circle-check text-[#2EC4B6] mt-1 shrink-0"></i>
+                                    <span>동일 사실 기반으로 기록 작성</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-slate-900 font-extrabold">
+                                    <i class="fa-solid fa-circle-check text-[#2EC4B6] mt-1 shrink-0"></i>
+                                    <span>시간 흐름에 따라 원인–조치가 논리적으로 연결되도록 기록</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-slate-900 font-extrabold">
+                                    <i class="fa-solid fa-circle-check text-[#2EC4B6] mt-1 shrink-0"></i>
+                                    <span>퇴원 유형 작성 (퇴원, 전원, 사망, 자의퇴원 등)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 20,
+                title: "입원 경과기록 초안 작성 핵심 요약",
+                narration: "오늘 교육의 핵심 내용을 요약해 드리겠습니다. 경과기록은 에스 오 에이 피 형식에 맞추어 주관적 정보와 객관적 정보를 철저히 분리하십시오. 정확한 수치를 명확히 제시하며 복사 붙여넣기나 모호한 표현은 절대 지양해 주시기 바랍니다. 또한 원내 규정된 오대 금기약어를 숙지하고, 상태 변동 발생 시 즉시 작성해 주셔야 합니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full space-y-6 w-full my-auto max-w-5xl pt-4">
+                        <div class="text-center">
+                            <p class="scale-text-subtitle font-black text-[#2EC4B6]">입원 경과기록지 초안 작성 요약</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center flex flex-col justify-between shadow-sm">
+                                <div class="bg-[#0B3D91]/10 text-[#0B3D91] w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl mb-2">
+                                    <i class="fa-solid fa-scale-balanced"></i>
+                                </div>
+                                <h5 class="font-black scale-text-sm text-[#0B3D91]">SOAP 명확 분리</h5>
+                                <div class="h-[1px] bg-slate-200 my-1"></div>
+                                <p class="scale-text-xs text-slate-800 font-bold">주관(S)과 객관(O)의 기준 명확 분리, 모호한 표현 금지</p>
+                            </div>
+                            <div class="bg-[#2EC4B6]/10 p-4 rounded-xl border border-[#2EC4B6]/30 text-center flex flex-col justify-between shadow-md">
+                                <div class="bg-[#2EC4B6]/20 text-[#2EC4B6] w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl mb-2">
+                                    <i class="fa-solid fa-ban"></i>
+                                </div>
+                                <h5 class="font-black scale-text-sm text-[#0B3D91]">전일 복사 금지</h5>
+                                <div class="h-[1px] bg-slate-300 my-1"></div>
+                                <p class="scale-text-xs text-slate-900 font-extrabold">전일 복사, 붙여넣기 금지<br>매일의 상태 변화 기록</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center flex flex-col justify-between shadow-sm">
+                                <div class="bg-[#0B3D91]/10 text-[#0B3D91] w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl mb-2">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                </div>
+                                <h5 class="font-black scale-text-sm text-[#0B3D91]">금기약어 금지</h5>
+                                <div class="h-[1px] bg-slate-200 my-1"></div>
+                                <p class="scale-text-xs text-slate-800 font-bold">IU, TIW, D/C, m.g, ? 금지</p>
+                            </div>
+                            <div class="bg-[#2EC4B6]/10 p-4 rounded-xl border border-[#2EC4B6]/30 text-center flex flex-col justify-between shadow-md">
+                                <div class="bg-[#2EC4B6]/20 text-[#2EC4B6] w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl mb-2">
+                                    <i class="fa-solid fa-stopwatch"></i>
+                                </div>
+                                <h5 class="font-black scale-text-sm text-[#0B3D91]">즉시 기록 엄수</h5>
+                                <div class="h-[1px] bg-slate-300 my-1"></div>
+                                <p class="scale-text-xs text-slate-900 font-extrabold">환자상태 변화 및 조치 내용은 즉시 기록 (최소 24시간 이내)</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 21,
+                title: "안전한 기록, 신뢰의 동반자",
+                narration: "완벽한 기록만이 환자와 의료진 모두를 안전하게 연결해 줄 수 있습니다. 경과기록은 환자의 상태를 정확하게 전달하는 중요한 의사소통 도구입니다. 정확한 SOAP 작성, 객관적 기록, 표준 의학용어 사용, 환자안전 관련 기록, 그리고 적시성과 일관성을 갖춘 기록은 환자안전과 의료의 질 향상에 기여합니다. 이상으로 경과기록 작성 교육을 마치겠습니다. 감사합니다.",
+                contentHtml: `
+                    <div class="flex flex-col justify-center items-center h-full text-center space-y-6 my-auto max-w-4xl pt-4">
+                        <div class="bg-[#2EC4B6]/15 text-[#2EC4B6] w-24 h-24 rounded-full flex items-center justify-center text-5xl border border-[#2EC4B6]/30 animate-bounce shadow">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div class="space-y-3">
+                            <h3 class="scale-text-title font-black text-[#0B3D91]">입원 경과기록 초안 작성 교육 과정을 수료하셨습니다</h3>
+                            <p class="scale-text-lg text-[#2EC4B6] font-extrabold">
+                                "정확하고 표준화된 차트 작성은 가장 강력한 환자 보호입니다."
+                            </p>
+                        </div>
+                        <span class="scale-text-xs text-[#0B3D91]/80 tracking-widest font-mono font-black uppercase block pt-4">Konkuk University Hospital PA Education Division</span>
+                    </div>
+                `
+            }
+        ];
+    </script>
+
+    <script>
+        let currentSlideIndex = 0;
+        let isAudioPlaying = false;
+        let isPaused = false;
+        let currentTempo = 1.0;
+        let savedAudioTime = 0;
+        let userHasInteracted = false;
+        
+        let autoTransitionTimeout = null;
+        let visualizerAnimationId = null;
+
+        // 브라우저 캐시용 수동 맵
+        let customAudioMap = {}; // { slideId: ObjectURL }
+
+        // 싱글톤 글로벌 오디오 요소 및 Web Audio 분석 엔진 기획
+        let globalAudio = null; 
+        let audioContext = null;
+        let audioAnalyserNode = null;
+        let audioSourceNode = null;
+        let playPromise = null; // 연타 방지 전용 락킹 키
+
+        // 슬라이드 간 비동기 경쟁 상태 방지 전용 안전 고유 ID 트래커
+        let currentAudioPlayId = 0; 
+
+        // Visualizer Canvas & Font Scaling
+        const visualizerCanvas = document.getElementById('audioVisualizer');
+        const vCtx = visualizerCanvas.getContext('2d');
+        let rootScale = 1.12;
+
+        // DOM Elements
+        const slideContainer = document.getElementById('slideContainer');
+        const slideBody = document.getElementById('slideBody');
+        const slideHeaderTitle = document.getElementById('slideHeaderTitle');
+        const slidePageIndicator = document.getElementById('slidePageIndicator');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const playAudioBtn = document.getElementById('playAudioBtn');
+        const playIcon = document.getElementById('playIcon');
+        const playText = document.getElementById('playText');
+        const ttsStatus = document.getElementById('ttsStatus');
+        const audioTimer = document.getElementById('audioTimer');
+        const audioProgress = document.getElementById('audioProgress');
+        const topDotContainer = document.getElementById('topDotContainer');
+        const autoplayOverlay = document.getElementById('autoplayOverlay');
+        const startTrainingBtn = document.getElementById('startTrainingBtn');
+        const audioSourceIndicator = document.getElementById('audioSourceIndicator');
+
+        // Drawer Elements
+        const openTuningBtn = document.getElementById('openTuningBtn');
+        const closeTuningBtn = document.getElementById('closeTuningBtn');
+        const tuningDrawer = document.getElementById('tuningDrawer');
+        const customAudioInput = document.getElementById('customAudioInput');
+        const mappingStatusList = document.getElementById('mappingStatusList');
+        const clearCustomAudioBtn = document.getElementById('clearCustomAudioBtn');
+        const audioDropZone = document.getElementById('audioDropZone');
+        const uploadStatusText = document.getElementById('uploadStatusText');
+        const uploadCloudIcon = document.getElementById('uploadCloudIcon');
+
+        // Drawer Open/Close Events
+        openTuningBtn.onclick = () => { tuningDrawer.classList.remove('translate-x-full'); };
+        closeTuningBtn.onclick = () => { tuningDrawer.classList.add('translate-x-full'); };
+
+        const DB_NAME = "KonkukPaAudioDB";
+        const DB_VERSION = 1;
+        const STORE_NAME = "originalAudioFiles";
+        let db = null;
+
+        function initIndexedDB() {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            request.onupgradeneeded = (e) => {
+                const activeDb = e.target.result;
+                if (!activeDb.objectStoreNames.contains(STORE_NAME)) {
+                    activeDb.createObjectStore(STORE_NAME);
+                }
+            };
+            request.onsuccess = (e) => {
+                db = e.target.result;
+                restoreCustomAudiosFromDB();
+            };
+            request.onerror = (e) => { console.error("IndexedDB Open Error:", e); };
+        }
+
+        function saveAudioToDB(slideId, blob) {
+            if (!db) return;
+            const transaction = db.transaction([STORE_NAME], "readwrite");
+            const store = transaction.objectStore(STORE_NAME);
+            store.put(blob, slideId);
+        }
+
+        function restoreCustomAudiosFromDB() {
+            if (!db) return;
+            const transaction = db.transaction([STORE_NAME], "readonly");
+            const store = transaction.objectStore(STORE_NAME);
+            SLIDES_DATA.forEach(slide => {
+                const request = store.get(slide.id);
+                request.onsuccess = (e) => {
+                    const blob = e.target.result;
+                    if (blob) {
+                        customAudioMap[slide.id] = URL.createObjectURL(blob);
+                        if (slide.id === SLIDES_DATA[currentSlideIndex].id) {
+                            renderSlide(); 
+                        }
+                        renderMappingStatus();
+                    }
+                };
+            });
+        }
+
+        function clearAudioDB() {
+            if (!db) return;
+            const transaction = db.transaction([STORE_NAME], "readwrite");
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.clear();
+            request.onsuccess = () => {
+                showToast("브라우저 로컬 DB에 보관된 목소리를 완전히 삭제했습니다.");
+            };
+        }
+
+        function initAudioEngine() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            if (!globalAudio) {
+                globalAudio = new Audio();
+                globalAudio.crossOrigin = "anonymous";
+                
+                audioSourceNode = audioContext.createMediaElementSource(globalAudio);
+                audioAnalyserNode = audioContext.createAnalyser();
+                audioAnalyserNode.fftSize = 128;
+                
+                audioSourceNode.connect(audioAnalyserNode);
+                audioAnalyserNode.connect(audioContext.destination);
+
+                // 오디오 타임라인 변경 이벤트
+                globalAudio.addEventListener('timeupdate', () => {
+                    if (globalAudio.duration) {
+                        const pct = (globalAudio.currentTime / globalAudio.duration) * 100;
+                        audioProgress.style.width = `${pct}%`;
+                        const min = Math.floor(globalAudio.currentTime / 60).toString().padStart(2, '0');
+                        const sec = Math.floor(globalAudio.currentTime % 60).toString().padStart(2, '0');
+                        audioTimer.innerText = `${min}:${sec}`;
+                    }
+                });
+
+                // 재생이 완전히 완료되었을 때
+                globalAudio.addEventListener('ended', () => {
+                    setAudioPlayingUI(false);
+                    savedAudioTime = 0;
+                    audioProgress.style.width = '100%';
+                    ttsStatus.innerText = '설명 완료';
+                    triggerAutoNextSlide();
+                });
+            }
+        }
+
+        // 비동기 프로미스를 가두어 광클 시 발생되는 꼬임 현상 원천 차단
+        function safePlay() {
+            if (!globalAudio) return;
+            globalAudio.playbackRate = currentTempo;
+
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            // 이전 프로미스가 남아있다면 대기 후 체인
+            playPromise = globalAudio.play();
+            playPromise.then(() => {
+                playPromise = null;
+            }).catch(e => {
+                playPromise = null;
+                if (e.name !== 'AbortError') {
+                    console.warn("오디오 재생 실패:", e);
+                }
+            });
+        }
+
+        function safePause() {
+            if (!globalAudio) return;
+            if (playPromise) {
+                // 아직 연주 준비 중이라면 완료를 대기하고 체인식으로 잠시 후 멈춤
+                playPromise.then(() => {
+                    globalAudio.pause();
+                }).catch(() => {
+                    globalAudio.pause();
+                });
+            } else {
+                globalAudio.pause();
+            }
+        }
+
+        function changeFontSize(scale) {
+            rootScale = scale;
+            document.documentElement.style.setProperty('--text-scale-factor', scale);
+            
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.className = "size-btn px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+            });
+            
+            let btnId = "sizeBtn-1";
+            if (scale === 1.12) btnId = "sizeBtn-2";
+            else if (scale === 1.22) btnId = "sizeBtn-3";
+            else if (scale === 1.32) btnId = "sizeBtn-4";
+            document.getElementById(btnId).className = "size-btn px-3 py-1 rounded-lg text-xs font-bold bg-[#2EC4B6] text-white transition";
+        }
+
+        function changeTempo(tempo) {
+            currentTempo = tempo;
+            
+            document.querySelectorAll('.tempo-btn').forEach(btn => {
+                btn.className = "tempo-btn px-2.5 py-1 rounded bg-slate-800 text-[10px] font-bold text-slate-300 hover:bg-slate-700 transition";
+            });
+            let tempoBtnId = "tempoBtn-10";
+            if (tempo === 0.8) tempoBtnId = "tempoBtn-08";
+            else if (tempo === 1.2) tempoBtnId = "tempoBtn-12";
+            document.getElementById(tempoBtnId).className = "tempo-btn px-2.5 py-1 rounded bg-[#2EC4B6] text-[10px] font-bold text-white transition";
+
+            if (globalAudio && isAudioPlaying) {
+                globalAudio.playbackRate = currentTempo;
+            }
+        }
+
+        function renderProgressDots() {
+            topDotContainer.innerHTML = '';
+            SLIDES_DATA.forEach((slide, index) => {
+                const dot = document.createElement('div');
+                if (index === currentSlideIndex) {
+                    dot.className = "micro-dot-indicator micro-dot-active h-2.5 rounded-full bg-[#2EC4B6]";
+                } else if (index < currentSlideIndex) {
+                    dot.className = "micro-dot-indicator w-2.5 h-2.5 rounded-full bg-[#2EC4B6]/60";
+                } else {
+                    dot.className = "micro-dot-indicator w-2.5 h-2.5 rounded-full bg-white/30";
+                }
+                topDotContainer.appendChild(dot);
+            });
+        }
+
+        function setAudioPlayingUI(playing) {
+            isAudioPlaying = playing;
+            const slide = SLIDES_DATA[currentSlideIndex];
+            const hasCustom = !!customAudioMap[slide.id];
+            
+            if (playing) {
+                playIcon.className = "fa-solid fa-pause";
+                playText.innerText = "일시 정지";
+                ttsStatus.innerText = hasCustom ? '클로바 오리지널 아라 목소리 재생 중' : '아라 오리지널 가이드 재생 중';
+            } else {
+                playIcon.className = "fa-solid fa-play";
+                if (isPaused) {
+                    playText.innerText = "이어서 재생";
+                    ttsStatus.innerText = '일시 정지됨';
+                } else {
+                    playText.innerText = "설명 듣기";
+                    ttsStatus.innerText = '대기 중';
+                }
+            }
+        }
+
+        function stopAndResetAudio() {
+            if (autoTransitionTimeout) {
+                clearTimeout(autoTransitionTimeout);
+                autoTransitionTimeout = null;
+            }
+
+            // 비동기 스캔 찌꺼기를 완전히 파기하기 위한 플레이 키 고유증가 기법
+            currentAudioPlayId++;
+
+            if (globalAudio) {
+                safePause();
+            }
+
+            setAudioPlayingUI(false);
+            audioProgress.style.width = '0%';
+            audioTimer.innerText = '00:00';
+            if (visualizerAnimationId) cancelAnimationFrame(visualizerAnimationId);
+            drawIdleWave();
+        }
+
+        function destroyActiveAudio() {
+            stopAndResetAudio();
+            if (globalAudio) {
+                globalAudio.src = "";
+                try {
+                    globalAudio.load();
+                } catch(e) {}
+            }
+            savedAudioTime = 0;
+            isPaused = false;
+        }
+
+        function renderSlide() {
+            const slide = SLIDES_DATA[currentSlideIndex];
+            
+            // 겹침 방지: 다음으로 이동하는 즉시 오디오 중단 및 파기
+            destroyActiveAudio();
+
+            // 슬라이드 콘텐츠 주입
+            slideHeaderTitle.innerHTML = `<i class="fa-solid fa-stethoscope text-[#2EC4B6]"></i> ${slide.title}`;
+            slideBody.innerHTML = slide.contentHtml;
+            slidePageIndicator.innerText = `Slide ${(currentSlideIndex + 1).toString().padStart(2, '0')} / ${SLIDES_DATA.length}`;
+
+            const hasCustom = !!customAudioMap[slide.id];
+            if (hasCustom) {
+                audioSourceIndicator.className = "scale-text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300 px-3 py-1 rounded-full animate-pulse";
+                audioSourceIndicator.innerHTML = `<i class="fa-solid fa-circle-play text-amber-600"></i> 오리지널 아라 MP3`;
+            } else {
+                audioSourceIndicator.className = "scale-text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1 rounded-full";
+                audioSourceIndicator.innerHTML = `<i class="fa-solid fa-folder-open text-emerald-600"></i> 자동 매핑 아라 가이드`;
+            }
+
+            prevBtn.disabled = currentSlideIndex === 0;
+            if (currentSlideIndex === SLIDES_DATA.length - 1) {
+                nextBtn.innerHTML = `수련 완료 <i class="fa-solid fa-award"></i>`;
+            } else {
+                nextBtn.innerHTML = `다음 <i class="fa-solid fa-chevron-right"></i>`;
+            }
+
+            renderProgressDots();
+
+            if (userHasInteracted) {
+                setTimeout(() => {
+                    requestSlideAudio();
+                }, 100);
+            }
+        }
+
+        async function requestSlideAudio() {
+            stopAndResetAudio();
+            
+            const slide = SLIDES_DATA[currentSlideIndex];
+            const myPlayId = currentAudioPlayId; // 현재 스레드 고유 아이디 고정
+
+            // 커스텀 MP3가 있다면 즉시 재생 처리
+            if (customAudioMap[slide.id]) {
+                if (myPlayId !== currentAudioPlayId) return;
+                setupAndPlayAudio(customAudioMap[slide.id]);
+                return;
+            }
+
+            // 비동기로 경로 스캔 시작
+            const validPath = await checkAndGetPath(myPlayId);
+
+            // 중요: 비동기 통신이 끝난 순간, 이미 사용자가 슬라이드를 빠르게 넘겨버렸다면 연주를 기각
+            if (myPlayId !== currentAudioPlayId) {
+                return;
+            }
+
+            if (validPath) {
+                setupAndPlayAudio(validPath);
+            } else {
+                ttsStatus.innerText = '등록된 아라 목소리 없음';
+                if (userHasInteracted) {
+                    showToast("현재 슬라이드에 할당된 아라 음원 파일이 감지되지 않았습니다.");
+                }
+                setAudioPlayingUI(false);
+            }
+        }
+
+        async function checkAndGetPath(myPlayId) {
+            const possiblePaths = [
+                `./audio/${SLIDES_DATA[currentSlideIndex].id}.mp3`,
+                `./${SLIDES_DATA[currentSlideIndex].id}.mp3`
+            ];
+
+            for (let path of possiblePaths) {
+                if (myPlayId !== currentAudioPlayId) return null;
+                try {
+                    const response = await fetch(path, { method: 'HEAD' });
+                    if (myPlayId !== currentAudioPlayId) return null;
+                    if (response.ok) {
+                        return path;
+                    }
+                } catch(e) {
+                    try {
+                        const getResp = await fetch(path);
+                        if (myPlayId !== currentAudioPlayId) return null;
+                        if (getResp.ok) return path;
+                    } catch(err) {}
+                }
+            }
+            return null;
+        }
+
+        function setupAndPlayAudio(audioUrl) {
+            initAudioEngine();
+
+            if (globalAudio.src === audioUrl && isPaused) {
+                isPaused = false;
+                setAudioPlayingUI(true);
+                safePlay();
+                drawRealAudioWave();
+                return;
+            }
+
+            globalAudio.src = audioUrl;
+            globalAudio.playbackRate = currentTempo;
+
+            setAudioPlayingUI(true);
+            isPaused = false;
+
+            if (savedAudioTime > 0) {
+                globalAudio.currentTime = savedAudioTime / 1000;
+            }
+
+            safePlay();
+            drawRealAudioWave();
+        }
+
+        function resizeVisualizer() {
+            visualizerCanvas.width = visualizerCanvas.parentElement.clientWidth;
+            visualizerCanvas.height = visualizerCanvas.parentElement.clientHeight;
+        }
+
+        function drawIdleWave() {
+            if (isAudioPlaying) return;
+            vCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+            vCtx.strokeStyle = "rgba(46, 196, 182, 0.25)";
+            vCtx.lineWidth = 1.5;
+            vCtx.beginPath();
+            const midY = visualizerCanvas.height / 2;
+            vCtx.moveTo(0, midY);
+            for (let x = 0; x < visualizerCanvas.width; x += 5) {
+                const y = midY + Math.sin(x * 0.05 + Date.now() * 0.003) * 3;
+                vCtx.lineTo(x, y);
+            }
+            vCtx.stroke();
+            visualizerAnimationId = requestAnimationFrame(drawIdleWave);
+        }
+
+        function drawRealAudioWave() {
+            if (!isAudioPlaying || !audioAnalyserNode) return;
+
+            const bufferLength = audioAnalyserNode.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            audioAnalyserNode.getByteTimeDomainData(dataArray);
+
+            vCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+            vCtx.lineWidth = 2.5;
+
+            const gradient = vCtx.createLinearGradient(0, 0, visualizerCanvas.width, 0);
+            gradient.addColorStop(0, '#2EC4B6'); 
+            gradient.addColorStop(0.5, '#0B3D91'); 
+            gradient.addColorStop(1, '#2EC4B6'); 
+            vCtx.strokeStyle = gradient;
+
+            vCtx.beginPath();
+            const sliceWidth = visualizerCanvas.width / bufferLength;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = (v * visualizerCanvas.height) / 2;
+
+                if (i === 0) {
+                    vCtx.moveTo(x, y);
+                } else {
+                    vCtx.lineTo(x, y);
+                }
+                x += sliceWidth;
+            }
+
+            vCtx.lineTo(visualizerCanvas.width, visualizerCanvas.height / 2);
+            vCtx.stroke();
+
+            visualizerAnimationId = requestAnimationFrame(drawRealAudioWave);
+        }
+
+        function triggerAutoNextSlide() {
+            if (autoTransitionTimeout) clearTimeout(autoTransitionTimeout);
+            
+            if (currentSlideIndex < SLIDES_DATA.length - 1) {
+                ttsStatus.innerText = '잠시 후 다음 슬라이드로 이동합니다...';
+                autoTransitionTimeout = setTimeout(() => {
+                    currentSlideIndex++;
+                    renderSlide();
+                }, 800); 
+            } else {
+                ttsStatus.innerText = '모든 교육 수련이 완료되었습니다.';
+            }
+        }
+
+        customAudioInput.addEventListener('change', handleAudioFiles);
+        audioDropZone.addEventListener('dragover', (e) => { e.preventDefault(); audioDropZone.classList.add('border-[#2EC4B6]'); });
+        audioDropZone.addEventListener('dragleave', () => { audioDropZone.classList.remove('border-[#2EC4B6]'); });
+        audioDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            audioDropZone.classList.remove('border-[#2EC4B6]');
+            if (e.dataTransfer.files) {
+                customAudioInput.files = e.dataTransfer.files;
+                handleAudioFiles({ target: customAudioInput });
+            }
+        });
+
+        function handleAudioFiles(e) {
+            const files = Array.from(e.target.files);
+            if (!files.length) return;
+
+            let matchCount = 0;
+            files.forEach(file => {
+                const name = file.name;
+                const numMatch = name.match(/(\d+)/);
+                if (numMatch) {
+                    const slideNum = parseInt(numMatch[1], 10);
+                    if (slideNum >= 1 && slideNum <= SLIDES_DATA.length) {
+                        const targetSlide = SLIDES_DATA[slideNum - 1];
+                        customAudioMap[targetSlide.id] = URL.createObjectURL(file);
+                        saveAudioToDB(targetSlide.id, file);
+                        matchCount++;
+                    }
+                }
+            });
+
+            if (matchCount > 0) {
+                uploadStatusText.innerText = `총 ${matchCount}개 오리지널 아라 MP3 파일 매핑 성공! 🎉`;
+                uploadCloudIcon.className = "fa-solid fa-circle-check text-3xl text-emerald-400";
+                renderMappingStatus();
+                renderSlide();
+            } else {
+                uploadStatusText.innerText = "번호 인식 실패! '1.mp3', '2.mp3'처럼 저장하세요.";
+                uploadCloudIcon.className = "fa-solid fa-cloud-arrow-up text-3xl text-slate-500";
+            }
+        }
+
+        function renderMappingStatus() {
+            mappingStatusList.innerHTML = '';
+            SLIDES_DATA.forEach(slide => {
+                const isMapped = !!customAudioMap[slide.id];
+                const row = document.createElement('div');
+                row.className = "flex justify-between items-center py-1.5 border-b border-slate-800/50";
+                row.innerHTML = `
+                    <span class="text-slate-300 font-medium">슬라이드 ${slide.id.toString().padStart(2, '0')}</span>
+                    ${isMapped ? 
+                        `<span class="text-emerald-400 font-extrabold flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> 오리지널 아라 MP3</span>` : 
+                        `<span class="text-slate-500 flex items-center gap-1"><i class="fa-solid fa-file-excel text-[9px]"></i> 등록 필요</span>`
+                    }
+                `;
+                mappingStatusList.appendChild(row);
+            });
+        }
+
+        clearCustomAudioBtn.onclick = () => {
+            Object.values(customAudioMap).forEach(url => URL.revokeObjectURL(url));
+            customAudioMap = {};
+            clearAudioDB();
+            uploadStatusText.innerText = "클로바 아라 MP3 파일 일괄 등록";
+            uploadCloudIcon.className = "fa-solid fa-cloud-arrow-up text-3xl text-slate-500";
+            renderMappingStatus();
+            renderSlide();
+        };
+
+        nextBtn.onclick = () => {
+            if (currentSlideIndex < SLIDES_DATA.length - 1) {
+                currentSlideIndex++;
+                renderSlide();
+            } else {
+                const modal = document.createElement('div');
+                modal.className = "fixed inset-0 flex items-center justify-center bg-[#072559]/85 backdrop-blur-sm z-50 p-4";
+                modal.innerHTML = `
+                    <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md text-center space-y-5 border-t-8 border-[#2EC4B6] text-slate-800">
+                        <div class="bg-[#2ec4b6]/15 text-[#2EC4B6] w-20 h-20 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <h4 class="text-2xl font-black text-[#0B3D91]">수고하셨습니다.</h4>
+                        <p class="text-base text-slate-600 leading-relaxed font-bold">
+                            건국대학교 충주병원 PA 간호사 입원 경과기록지 초안 작성 교육 과정을 성실히 수료하셨습니다.
+                        </p>
+                        <button onclick="this.parentNode.parentNode.remove()" class="w-full bg-[#2EC4B6] hover:bg-[#20a396] text-white font-bold py-4 rounded-xl transition text-base shadow">학습 종료</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+        };
+
+        prevBtn.onclick = () => {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                renderSlide();
+            }
+        };
+
+        playAudioBtn.onclick = () => {
+            userHasInteracted = true;
+            initAudioEngine();
+
+            if (isAudioPlaying) {
+                if (globalAudio) {
+                    savedAudioTime = globalAudio.currentTime * 1000;
+                    safePause();
+                }
+                isPaused = true;
+                setAudioPlayingUI(false);
+                if (visualizerAnimationId) cancelAnimationFrame(visualizerAnimationId);
+                drawIdleWave();
+            } else {
+                if (isPaused && globalAudio && globalAudio.src) {
+                    isPaused = false;
+                    setAudioPlayingUI(true);
+                    safePlay();
+                    drawRealAudioWave();
+                } else {
+                    requestSlideAudio();
+                }
+            }
+        };
+
+        function showToast(message) {
+            let toast = document.getElementById('customToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'customToast';
+                toast.className = 'fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-slate-900/90 text-white border border-[#2EC4B6]/50 px-6 py-3 rounded-xl text-xs font-bold shadow-2xl z-50 transition-all duration-300 opacity-0 pointer-events-none';
+                document.body.appendChild(toast);
+            }
+            toast.innerText = message;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 4000);
+        }
+
+        window.onload = () => {
+            initIndexedDB();
+            
+            startTrainingBtn.onclick = () => {
+                userHasInteracted = true;
+                initAudioEngine();
+                autoplayOverlay.classList.add('hidden');
+                renderSlide();
+            };
+        };
+
+        window.onresize = () => { resizeVisualizer(); };
+    </script>
+</body>
+</html>
